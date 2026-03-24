@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual local
+venv/
+.env
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docs
+README.md
+
+# Logs
+*.log
