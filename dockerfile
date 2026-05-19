@@ -22,9 +22,9 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Instala dependências
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+RUN pip install --no-cache-dir --upgrade pip wheel "setuptools<81" \
  && pip install --no-cache-dir -r requirements.txt \
- && python -c "import setuptools; import pkg_resources; print('setuptools ok')"
+ && python -c "import pkg_resources; print('pkg_resources ok')"
 
 
 # =========================
