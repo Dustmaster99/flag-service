@@ -8,17 +8,23 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Dependências de build
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
  && rm -rf /var/lib/apt/lists/*
 
+# Copia requirements
 COPY requirements.txt .
 
+# Cria ambiente virtual
 RUN python -m venv /opt/venv
+
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN pip install --upgrade pip \
- && pip install --no-cache-dir -r requirements.txt
+# Instala dependências
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && pip install --no-cache-dir -r requirements.txt \
+ && python -c "import setuptools; import pkg_resources; print('setuptools ok')"
 
 
 # =========================
@@ -32,16 +38,20 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/opt/venv/bin:$PATH"
 
-# 🔑 Dependência runtime do PostgreSQL (libpq)
+# Dependência runtime PostgreSQL (libpq)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
  && rm -rf /var/lib/apt/lists/*
 
+# Copia ambiente virtual pronto
 COPY --from=builder /opt/venv /opt/venv
+
+# Copia aplicação
 COPY app.py .
 COPY db ./db
 
+# Expõe porta
 EXPOSE ${PORT}
 
+# Inicialização da aplicação
 CMD ["sh", "-c", ": \"${PORT:?PORT environment variable is required}\" && python app.py --port ${PORT}"]
-
